@@ -1,5 +1,6 @@
 package com.endava.plugins
 
+import com.endava.books
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -14,6 +15,7 @@ fun Application.configureRouting() {
         }
     }
     routing {
+        books()
         get("/") {
             call.respondText("Hello World!")
         }
