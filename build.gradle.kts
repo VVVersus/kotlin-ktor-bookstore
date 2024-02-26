@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     implementation("io.ktor:ktor-server-resources:$ktor_version")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-html-builder-jvm")
     implementation("org.jetbrains.kotlinx:kotlinx-html:0.10.1")

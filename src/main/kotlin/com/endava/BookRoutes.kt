@@ -2,6 +2,7 @@ package com.endava
 
 import io.ktor.resources.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
@@ -14,37 +15,38 @@ data class BookListResource(val sortBy: String = "title", val asc: Boolean = tru
 fun Route.books() {
     val dataManager = DataManager()
 
-    route("/book") {
+    route("/api/book") {
+        authenticate("bookStoreAuth") {
+            get<BookListResource> {
+                call.respond(dataManager.getSortedBooks(it.sortBy, it.asc))
+            }
 
-        get<BookListResource> {
-            call.respond(dataManager.getSortedBooks(it.sortBy, it.asc))
-        }
+            get {
 
-        get {
+                call.respond(dataManager.getAllBooks())
+            }
 
-            call.respond(dataManager.getAllBooks())
-        }
+            post("/{id}") {
+                val id = call.parameters["id"].toString()
+                val book = call.receive(Book::class)
+                val updatedBook = dataManager.updateBook(id, book)
 
-        post("/{id}") {
-            val id = call.parameters["id"].toString()
-            val book = call.receive(Book::class)
-            val updatedBook = dataManager.updateBook(id, book)
+                call.respond { updatedBook }
+            }
 
-            call.respond { updatedBook }
-        }
+            put("/") {
+                val book = call.receive(Book::class)
+                val newBook = dataManager.addBook(book)
 
-        put("/") {
-            val book = call.receive(Book::class)
-            val newBook = dataManager.addBook(book)
+                call.respond { newBook }
+            }
 
-            call.respond { newBook }
-        }
+            delete("/{id}") {
+                val id = call.parameters["id"].toString()
+                val deletedBook = dataManager.deleteBook(id)
 
-        delete("/{id}") {
-            val id = call.parameters["id"].toString()
-            val deletedBook = dataManager.deleteBook(id)
-
-            call.respond { deletedBook }
+                call.respond { deletedBook }
+            }
         }
     }
 }
