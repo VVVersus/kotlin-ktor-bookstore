@@ -1,15 +1,24 @@
 package com.endava
 
 import io.ktor.server.application.*
+import io.ktor.server.locations.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+@Location("/list")
+data class BookListLocation(val sortBy: String, val asc: Boolean)
+
 fun Route.books() {
     val dataManager = DataManager()
+
     route("/book") {
 
-        get("") {
+        get<BookListLocation> {
+            call.respond(dataManager.getSortedBooks(it.sortBy, it.asc))
+        }
+
+        get {
 
             call.respond(dataManager.getAllBooks())
         }
@@ -22,7 +31,7 @@ fun Route.books() {
             call.respond { updatedBook }
         }
 
-        put("") {
+        put("/") {
             val book = call.receive(Book::class)
             val newBook = dataManager.addBook(book)
 

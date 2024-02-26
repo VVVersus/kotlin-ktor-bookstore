@@ -1,0 +1,1 @@
+curl "http://localhost:8080/book/list?sortBy=title&asc=true"

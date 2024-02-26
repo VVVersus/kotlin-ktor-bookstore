@@ -1,7 +1,12 @@
 package com.endava
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import kotlin.reflect.full.declaredMemberProperties
+
 class DataManager {
 
+    private val log: Logger = LoggerFactory.getLogger(DataManager::class.java)
     private var books = ArrayList<Book>()
 
     private fun getId() = books.size.toString()
@@ -48,4 +53,17 @@ class DataManager {
 
     fun getAllBooks(): List<Book> = books
 
+    fun getSortedBooks(sortedBy: String, asc: Boolean): List<Book> {
+        val member = Book::class.declaredMemberProperties.find { it.name == sortedBy }
+
+        if (member == null) {
+            log.info("The field to sort does not exist!")
+            return getAllBooks()
+        }
+
+        if (asc) {
+            return getAllBooks().sortedBy { member.get(it).toString() }
+        }
+        return getAllBooks().sortedByDescending { member.get(it).toString() }
+    }
 }
