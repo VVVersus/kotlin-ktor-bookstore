@@ -1,20 +1,22 @@
 package com.endava
 
+import io.ktor.resources.*
 import io.ktor.server.application.*
-import io.ktor.server.locations.*
 import io.ktor.server.request.*
+import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.routing.get
 
-@Location("/list")
-data class BookListLocation(val sortBy: String, val asc: Boolean)
+@Resource("/list")
+data class BookListResource(val sortBy: String = "title", val asc: Boolean = true)
 
 fun Route.books() {
     val dataManager = DataManager()
 
     route("/book") {
 
-        get<BookListLocation> {
+        get<BookListResource> {
             call.respond(dataManager.getSortedBooks(it.sortBy, it.asc))
         }
 

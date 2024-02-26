@@ -12,11 +12,11 @@ fun main() {
 }
 
 fun Application.module() {
-    configureLocation()
     configureTemplating()
     configureSecurity()
     configureMonitoring()
     configureHTTP()
     configureSerialization()
+    configureResources()
     configureRouting()
 }
